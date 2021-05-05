@@ -108,38 +108,17 @@ public class MainActivity extends AppCompatActivity{
         }
 
     }
-    boolean Already_selected(City city )
-    {
-        boolean found = false;
-        for(int i=0;i<selected_cities.size() && found == false;i++)
-        {
-            if (selected_cities.get(i).isCity(city) == true ) {
-                found = true;
-            }
-        }
-        return found;
-    }
-    void deselect_selectedcities()
-    {
-        for(int i =0;i<selected_cities.size();i++)
-        {
-            if(selected_cities.get(i).isImportant() == false)
-            {
-                selected_cities.remove(i);
-                i--;
-            }
-        }
-    }
+
     private void addselectedcities() {
 
+        selected_cities.clear();
         for(int i=0;i<cities.size();i++) {
-            if(cities.get(i).isImportant() == true && Already_selected(cities.get(i)) == false) {
+            if(cities.get(i).isImportant() == true) {
 
                 selected_cities.add(cities.get(i));
 
             }
         }
-        deselect_selectedcities();
 
     }
 
