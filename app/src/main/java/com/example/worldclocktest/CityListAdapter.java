@@ -81,6 +81,7 @@ public class CityListAdapter extends ArrayAdapter<City> implements Filterable {
         holder.name.setText(city.getName());
         holder.time.setText(city.getTime());
         holder.box.setTag(city);
+        holder.box.setChecked(city.isImportant());
 
 
         return convertView;
