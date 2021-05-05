@@ -17,13 +17,18 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="82dp"
-        android:layout_weight="30" />
+        android:layout_weight="30"
+        android:textSize="15sp"
+        />
+
+
 
     <TextView
         android:id="@+id/timeView"
         android:layout_width="27dp"
         android:layout_height="82dp"
-        android:layout_weight="15" />
+        android:layout_weight="15"
+        android:textSize="15sp"/>
 
 
 </LinearLayout>

@@ -1,6 +1,8 @@
 package com.example.worldclocktest;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Context;
@@ -124,8 +126,10 @@ public class MainActivity extends AppCompatActivity{
 
     private void CreateListView()
     {
-        ListView view = (ListView) findViewById(R.id.view_list1);
-        CitySelectedListAdapter adapter= new CitySelectedListAdapter(this,R.layout.adapter_selected_list,selected_cities);
+        RecyclerView view = (RecyclerView) findViewById(R.id.view_list1);
+        view.setLayoutManager(new LinearLayoutManager(this));
+
+        CitySelectedListAdapter adapter= new CitySelectedListAdapter(selected_cities);
         view.setAdapter(adapter);
     }
 
