@@ -24,9 +24,45 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        cities = new ArrayList<City>();
+        create_City_list();
+
         selected_cities = new ArrayList<City>();
         showMessage("Created");
+
+    }
+    private void create_City_list() {
+        cities = new ArrayList<City>();
+        City city1 = new City("Singapore","Asia/Singapore");
+        City city2 = new City("Karachi","Asia/Karachi");
+        City city3 = new City("Muscat","Asia/Muscat");
+        City city4 = new City("NewYork","America/NewYork");
+        City city5 = new City("Istanbul","Asia/Istanbul");
+        City city6 = new City("LogAngeles","America/Los_Angeles");
+        City city7= new City("San Francisco","America/San_Francisco");
+        City city8 = new City("London","Europe/London");
+        City city9 = new City("Victoria","Australia/Victoria");
+        City city10 = new City("Delhi","Asia/Delhi");
+        City city11 = new City("Shanghai","Asia/Shanghai");
+        City city12 = new City("Toronto","Canada/Toronto");
+        City city13 = new City("Yukon","Canada/Yukon");
+        City city14 = new City("Sydney","Australia/Sydney");
+        City city15 = new City("Mexico","America/Mexico_City");
+        cities.add(city1);
+        cities.add(city2);
+        cities.add(city3);
+        cities.add(city4);
+        cities.add(city5);
+        cities.add(city6);
+        cities.add(city7);
+        cities.add(city8);
+        cities.add(city9);
+        cities.add(city10);
+        cities.add(city11);
+        cities.add(city12);
+        cities.add(city13);
+        cities.add(city14);
+        cities.add(city15);
+
     }
 
 
@@ -46,6 +82,7 @@ public class MainActivity extends AppCompatActivity{
 
         showMessage("city_list");
         Intent intent = new Intent(this, ListActivity.class);
+        intent.putExtra("list",cities);
         startActivityForResult(intent,REQUEST_CODE);
 
     }
@@ -82,7 +119,19 @@ public class MainActivity extends AppCompatActivity{
         }
         return found;
     }
+    void deselect_selectedcities()
+    {
+        for(int i =0;i<selected_cities.size();i++)
+        {
+            if(selected_cities.get(i).isImportant() == false)
+            {
+                selected_cities.remove(i);
+                i--;
+            }
+        }
+    }
     private void addselectedcities() {
+
         for(int i=0;i<cities.size();i++) {
             if(cities.get(i).isImportant() == true && Already_selected(cities.get(i)) == false) {
 
@@ -90,6 +139,8 @@ public class MainActivity extends AppCompatActivity{
 
             }
         }
+        deselect_selectedcities();
+
     }
 
     private void CreateListView()
