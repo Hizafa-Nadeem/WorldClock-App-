@@ -1,57 +1,41 @@
-package com.example.worldclocktest;
-
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
+packagecom.example.worldclocktest;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+        import android.content.Context;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        importandroid.widget.ArrayAdapter;
+        importandroid.widget.CheckBox;
+        importandroid.widget.TextView;
 
-public class CitySelectedListAdapter  extends ArrayAdapter<City> {
+        importandroidx.annotation.NonNull;
+        importandroidx.annotation.Nullable;
 
-    private ArrayList<City> cities;
+        importjava.util.ArrayList;
 
 
-    public CitySelectedListAdapter(Context context, int resource, ArrayList<City>cities) {
-        super(context, resource, cities);
-        this.cities = cities;
-    }
+public class SelectedListAdapter extends RecyclerView.Adapter<SelectedListAdapter.ViewHolder> {
+
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, ViewGroup parent) {
-        City city = getItem(position) ;
-        Holder2 holder = new Holder2();
-
-        if(convertView == null) {
-            LayoutInflater inflator = LayoutInflater.from(getContext());
-            convertView = inflator.inflate(R.layout.adapter_selected_list,parent,false);
-
-
-
-            holder.name = (TextView) convertView.findViewById(R.id.text1);
-            holder.time = (TextView) convertView.findViewById(R.id.text2);
-            convertView.setTag(holder);
-
-
-        }
-        else {
-            holder = (Holder2) convertView.getTag();
-        }
-        holder.name.setText(city.getName());
-        holder.time.setText(city.getTime());
-
-        return convertView;
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return null;
     }
-    private class Holder2 {
-        TextView name;
-        TextView time;
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
     }
-}
+
+    @Override
+    public int getItemCount() {
+        return 0;
+    }
+
+    public class ViewHolder {
+    }
+};
