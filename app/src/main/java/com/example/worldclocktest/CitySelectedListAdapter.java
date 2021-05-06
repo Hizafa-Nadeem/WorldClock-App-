@@ -79,7 +79,14 @@ public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedLi
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
             menu.add(getAdapterPosition(),1,0,"delete");
         }
+
+    }
+    public void update_list(int ind)
+    {
+        selected_cities.remove(ind);
+        notifyDataSetChanged();
     }
 };

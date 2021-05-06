@@ -141,17 +141,13 @@ public class MainActivity extends AppCompatActivity{
         Rview.setAdapter(adapter);
     }
 
-    void deleteNote(long id)
+    void deleteCity(int id)
     {
         showMessage("deleted");
-        selected_cities.remove(id);
-        adapter.notifyItemRemoved((int)id);
+        adapter.update_list(id);
     }
 
-    @Override
-    public void registerForContextMenu(View view) {
-        super.registerForContextMenu(view);
-    }
+
 
 
 
@@ -161,8 +157,8 @@ public class MainActivity extends AppCompatActivity{
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
 
-            case R.id.delete_option:
-                deleteNote(info.id);
+            case 1:
+                deleteCity(item.getGroupId());
                 return true;
             default:
                 return super.onContextItemSelected(item);
