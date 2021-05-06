@@ -1,18 +1,22 @@
 package com.example.worldclocktest;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 
-public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedListAdapter.ViewHolder> {
+public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedListAdapter.ViewHolder>   {
 
    private ArrayList<City> selected_cities;
 
@@ -38,23 +42,32 @@ public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedLi
 
     }
 
+
     @Override
     public int getItemCount() {
         return selected_cities.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         TextView city_name;
         TextView city_time;
+        LinearLayout layout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             city_name = (TextView) itemView.findViewById(R.id.text1);
             city_time = (TextView) itemView.findViewById(R.id.text2);
+            layout =(LinearLayout)itemView.findViewById(R.id.layout_id);
+            layout.setOnCreateContextMenuListener(this);
 
         }
+
+
 
         public TextView getCity_name() {
             return city_name;
@@ -63,5 +76,17 @@ public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedLi
         public TextView getCity_time() {
             return city_time;
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+            menu.add(getAdapterPosition(),1,0,"delete");
+        }
+
+    }
+    public void update_list(int ind)
+    {
+        selected_cities.remove(ind);
+        notifyDataSetChanged();
     }
 };
