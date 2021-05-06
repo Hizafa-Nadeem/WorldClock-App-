@@ -1,5 +1,6 @@
 package com.example.worldclocktest;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,7 +9,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,6 +24,8 @@ public class MainActivity extends AppCompatActivity{
 
     ArrayList<City> selected_cities;
     ArrayList<City> cities;
+    RecyclerView Rview;
+    CitySelectedListAdapter adapter;
     final int REQUEST_CODE = 1;
 
     @Override
@@ -124,13 +131,43 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+
     private void CreateListView()
     {
-        RecyclerView view = (RecyclerView) findViewById(R.id.view_list1);
-        view.setLayoutManager(new LinearLayoutManager(this));
+        Rview = (RecyclerView) findViewById(R.id.view_list1);
+        Rview.setLayoutManager(new LinearLayoutManager(this));
 
-        CitySelectedListAdapter adapter= new CitySelectedListAdapter(selected_cities);
-        view.setAdapter(adapter);
+        adapter= new CitySelectedListAdapter(selected_cities);
+        Rview.setAdapter(adapter);
+    }
+
+    void deleteNote(long id)
+    {
+        showMessage("deleted");
+        selected_cities.remove(id);
+        adapter.notifyItemRemoved((int)id);
+    }
+
+    @Override
+    public void registerForContextMenu(View view) {
+        super.registerForContextMenu(view);
+    }
+
+
+
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+
+            case R.id.delete_option:
+                deleteNote(info.id);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+
     }
 
 
