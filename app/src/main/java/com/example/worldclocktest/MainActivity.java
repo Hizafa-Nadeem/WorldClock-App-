@@ -146,7 +146,8 @@ public class MainActivity extends AppCompatActivity{
             if(cities.get(i).isImportant() == true && ind == -1) {
 
                 selected_cities.add(cities.get(i));
-                //Todo cities.get(i).save();
+                cities.get(i).save();
+
 
             }
             else if(cities.get(i).isImportant() == false && ind != -1)
