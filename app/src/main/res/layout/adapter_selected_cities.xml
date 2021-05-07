@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_id"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:orientation="horizontal">
+    android:layout_height = "100dp"
+    android:id="@+id/layout_id"
+    >
 
     <TextView
         android:id="@+id/text1"
-        android:layout_width="153dp"
-        android:layout_height="156dp"
-        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
         android:layout_weight="30"
+        android:layout_gravity="center"
         android:paddingLeft="10dp"
+        android:textSize="15sp"
 
-
-        android:textSize="15sp" />
+        />
 
     <TextView
         android:id="@+id/text2"
         android:layout_width="27dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_weight="15"
-        android:paddingRight="10dp"
+        android:layout_height="70dp"
         android:textSize="15sp"
+        android:layout_gravity="center"
+        android:paddingRight="10dp"
+        android:layout_weight="15"
 
         />
 

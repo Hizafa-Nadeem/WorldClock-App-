@@ -42,23 +42,10 @@ public class MainActivity extends AppCompatActivity{
         //Todo intialize db
 
         dao = new CItyDao(this);
-
-    }
-
-
-    public void onPause(){
-        super.onPause();
-
-        for(City city: selected_cities){
-            city.save();
-        }
-    }
-
-    public void onResume(){
-        super.onResume();
-
         //selected_cities = city_load.load(dao);
+
     }
+
 
     private void create_City_list() {
         cities = new ArrayList<City>();
@@ -138,17 +125,38 @@ public class MainActivity extends AppCompatActivity{
         }
 
     }
+    int Already_selected(City city)
+    {
+        int ind =-1;
+        for (int i=0;i< selected_cities.size()&& ind == -1;i++)
+        {
+            if (selected_cities.get(i).getName().equals( city .getName()) == true)
+            {
+                ind = i;
+            }
+        }
+        return ind;
+    }
 
     private void addselectedcities() {
 
-        selected_cities.clear();
+        //selected_cities.clear();
         for(int i=0;i<cities.size();i++) {
-            if(cities.get(i).isImportant() == true) {
+            int ind = Already_selected(cities.get(i));
+            if(cities.get(i).isImportant() == true && ind == -1) {
 
                 selected_cities.add(cities.get(i));
+                //Todo cities.get(i).save();
 
             }
+            else if(cities.get(i).isImportant() == false && ind != -1)
+            {
+                selected_cities.remove(ind);
+                //Todo cities.get(i).delete();
+                adapter.notifyDataSetChanged();
+            }
         }
+
 
     }
 

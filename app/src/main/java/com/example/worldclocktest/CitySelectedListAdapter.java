@@ -88,5 +88,6 @@ public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedLi
     {
         selected_cities.remove(ind);
         notifyDataSetChanged();
+        //selected_cities.get(i).delete();
     }
 };

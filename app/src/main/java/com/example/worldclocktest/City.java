@@ -20,7 +20,7 @@ public class City implements Serializable {
     private TimeZone time;
     String timevalue;
 
-    ICityDao dao = null;
+    private transient ICityDao dao = null;
 
     public City(String name,String time,ICityDao dao){
         init();
@@ -68,18 +68,24 @@ public class City implements Serializable {
 
     public void save()
     {
-        Hashtable<String, String > row = new Hashtable<String,String>();
-        SimpleDateFormat df  = new SimpleDateFormat("hh:mm");
+        if(dao != null) {
+            Hashtable<String, String> row = new Hashtable<String, String>();
+            SimpleDateFormat df = new SimpleDateFormat("hh:mm");
 
-        row.put("id",id);
-        row.put("name",name);
-        row.put("important",important?"true":"false"); //Todo Learn this as well
-        row.put("time",timevalue);
+            row.put("id", id);
+            row.put("name", name);
+            row.put("important", important ? "true" : "false"); //Todo Learn this as well
+            row.put("time", timevalue);
 
-        dao.save(row);
+            dao.save(row);
+        }
 
     }
+    /*
+    public void delete()
+    {
 
+*/
     public void load(Hashtable<String,String> row)
     {
         id = row.get("id");
