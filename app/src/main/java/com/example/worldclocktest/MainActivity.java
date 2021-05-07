@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity{
     RecyclerView Rview;
     CitySelectedListAdapter adapter;
     final int REQUEST_CODE = 1;
+    ICityDao dao;
+    City city_load;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,25 +39,44 @@ public class MainActivity extends AppCompatActivity{
 
         selected_cities = new ArrayList<City>();
         showMessage("Created");
+        //Todo intialize db
+
+        dao = new CItyDao(this);
 
     }
+
+
+    public void onPause(){
+        super.onPause();
+
+        for(City city: selected_cities){
+            city.save();
+        }
+    }
+
+    public void onResume(){
+        super.onResume();
+
+        //selected_cities = city_load.load(dao);
+    }
+
     private void create_City_list() {
         cities = new ArrayList<City>();
-        City city1 = new City("Singapore","Asia/Singapore");
-        City city2 = new City("Karachi","Asia/Karachi");
-        City city3 = new City("Muscat","Asia/Muscat");
-        City city4 = new City("NewYork","America/NewYork");
-        City city5 = new City("Istanbul","Asia/Istanbul");
-        City city6 = new City("LogAngeles","America/Los_Angeles");
-        City city7= new City("San Francisco","America/San_Francisco");
-        City city8 = new City("London","Europe/London");
-        City city9 = new City("Victoria","Australia/Victoria");
-        City city10 = new City("Delhi","Asia/Delhi");
-        City city11 = new City("Shanghai","Asia/Shanghai");
-        City city12 = new City("Toronto","Canada/Toronto");
-        City city13 = new City("Yukon","Canada/Yukon");
-        City city14 = new City("Sydney","Australia/Sydney");
-        City city15 = new City("Mexico","America/Mexico_City");
+        City city1 = new City("Singapore","Asia/Singapore",dao);
+        City city2 = new City("Karachi","Asia/Karachi",dao);
+        City city3 = new City("Muscat","Asia/Muscat",dao);
+        City city4 = new City("NewYork","America/NewYork",dao);
+        City city5 = new City("Istanbul","Asia/Istanbul",dao);
+        City city6 = new City("LogAngeles","America/Los_Angeles",dao);
+        City city7= new City("San Francisco","America/San_Francisco",dao);
+        City city8 = new City("London","Europe/London",dao);
+        City city9 = new City("Victoria","Australia/Victoria",dao);
+        City city10 = new City("Delhi","Asia/Delhi",dao);
+        City city11 = new City("Shanghai","Asia/Shanghai",dao);
+        City city12 = new City("Toronto","Canada/Toronto",dao);
+        City city13 = new City("Yukon","Canada/Yukon",dao);
+        City city14 = new City("Sydney","Australia/Sydney",dao);
+        City city15 = new City("Mexico","America/Mexico_City",dao);
         cities.add(city1);
         cities.add(city2);
         cities.add(city3);
