@@ -19,6 +19,7 @@ public class CItyDao implements ICityDao {
 
     private Context context;
     SQLiteDatabase db;
+    private String Name = "Name";
 
     public CItyDao(Context ctx){
         context = ctx;
@@ -71,5 +72,14 @@ public class CItyDao implements ICityDao {
     @Override
     public Hashtable<String, String> load(String id) {
         return null;
+    }
+
+    public void delete(String city_name)
+    {
+        DbHelper dbHelper= new DbHelper(context);
+        db = dbHelper.getWritableDatabase();
+
+
+        db.execSQL("DELETE FROM " + "City"+ " WHERE "+Name+"='"+city_name+"'");
     }
 }

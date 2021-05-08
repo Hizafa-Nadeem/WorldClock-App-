@@ -110,5 +110,9 @@ public class City implements Serializable {
        }
     return cities;
     }
+    public void delete(String city_name,ICityDao dao)
+    {
+        dao.delete(city_name);
+    }
 
 }

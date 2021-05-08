@@ -84,10 +84,10 @@ public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedLi
         }
 
     }
-    public void update_list(int ind)
+    public void update_list(int ind,ICityDao dao)
     {
+        selected_cities.get(ind).delete(selected_cities.get(ind).getName(),dao);
         selected_cities.remove(ind);
         notifyDataSetChanged();
-        //selected_cities.get(i).delete();
     }
 };

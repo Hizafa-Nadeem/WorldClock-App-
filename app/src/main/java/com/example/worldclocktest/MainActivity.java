@@ -194,14 +194,11 @@ public class MainActivity extends AppCompatActivity{
             if(cities.get(i).isImportant() == true && ind == -1) {
 
                 selected_cities.add(cities.get(i));
-                //cities.get(i).save(dao);
-
 
             }
             else if(cities.get(i).isImportant() == false && ind !=-1)
             {
-                selected_cities.remove(ind);
-                //adapter.update_list();
+                deleteCity(ind);
             }
         }
 
@@ -213,7 +210,7 @@ public class MainActivity extends AppCompatActivity{
     void deleteCity(int id)
     {
         showMessage("deleted");
-        adapter.update_list(id);
+        adapter.update_list(id,dao);
     }
 
 
