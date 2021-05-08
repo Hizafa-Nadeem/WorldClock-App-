@@ -28,22 +28,50 @@ public class MainActivity extends AppCompatActivity{
     CitySelectedListAdapter adapter;
     final int REQUEST_CODE = 1;
     ICityDao dao;
-    City city_load;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        create_City_list();
-
+        dao = new CItyDao(this);
         selected_cities = new ArrayList<City>();
         showMessage("Created");
-        //Todo intialize db
 
-        dao = new CItyDao(this);
-        //selected_cities = city_load.load(dao);
 
+
+        create_City_list();
+
+    }
+    public void onResume()
+    {
+        super.onResume();
+        selected_cities = cities.get(0).load(dao);
+        if(selected_cities.size()!=0) {
+            CreateListView();
+        }
+
+        for (int i =0;i< selected_cities.size();i++)
+        {
+            load_checkbox(selected_cities.get(i).getName());
+
+        }
+
+
+    }
+    void load_checkbox(String city_name)
+    {
+        boolean found = false;
+         for( int i =0;i<cities.size() && found == false;i++)
+         {
+             if(cities.get(i).getName().equals(city_name)==true)
+             {
+                 cities.get(i).setImportant(true);
+                 found = true;
+             }
+
+         }
     }
 
 
@@ -81,6 +109,15 @@ public class MainActivity extends AppCompatActivity{
         cities.add(city15);
 
     }
+    private void CreateListView()
+    {
+        Rview = (RecyclerView) findViewById(R.id.view_list1);
+        Rview.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter= new CitySelectedListAdapter(selected_cities);
+        Rview.setAdapter(adapter);
+    }
+
 
 
     private void showMessage(String message) {
@@ -146,15 +183,16 @@ public class MainActivity extends AppCompatActivity{
             if(cities.get(i).isImportant() == true && ind == -1) {
 
                 selected_cities.add(cities.get(i));
-                cities.get(i).save();
+                cities.get(i).save(dao);
 
 
             }
-            else if(cities.get(i).isImportant() == false && ind != -1)
+            else if(cities.get(i).isImportant() == false && ind !=1)
             {
                 selected_cities.remove(ind);
                 //Todo cities.get(i).delete();
-                adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
             }
         }
 
@@ -162,14 +200,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-    private void CreateListView()
-    {
-        Rview = (RecyclerView) findViewById(R.id.view_list1);
-        Rview.setLayoutManager(new LinearLayoutManager(this));
-
-        adapter= new CitySelectedListAdapter(selected_cities);
-        Rview.setAdapter(adapter);
-    }
 
     void deleteCity(int id)
     {

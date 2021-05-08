@@ -66,8 +66,12 @@ public class City implements Serializable {
 
     //Database
 
-    public void save()
+    public void save(ICityDao dao)
     {
+        if (this.dao == null)
+        {
+            this.dao =dao;
+        }
         if(dao != null) {
             Hashtable<String, String> row = new Hashtable<String, String>();
             SimpleDateFormat df = new SimpleDateFormat("hh:mm");
@@ -81,11 +85,9 @@ public class City implements Serializable {
         }
 
     }
-    /*
-    public void delete()
-    {
 
-*/
+
+
     public void load(Hashtable<String,String> row)
     {
         id = row.get("id");
