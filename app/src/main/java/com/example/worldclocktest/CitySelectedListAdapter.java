@@ -28,7 +28,7 @@ public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedLi
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_selected_list, parent, false);
+                .inflate(R.layout.adapter_selected_cities, parent, false);
 
         return new ViewHolder(view);
     }
@@ -84,8 +84,10 @@ public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedLi
         }
 
     }
-    public void update_list(int ind)
+    public void update_list(int ind,ICityDao dao)
     {
+        selected_cities.get(ind).setImportant(false);
+        selected_cities.get(ind).delete(selected_cities.get(ind).getName(),dao);
         selected_cities.remove(ind);
         notifyDataSetChanged();
     }

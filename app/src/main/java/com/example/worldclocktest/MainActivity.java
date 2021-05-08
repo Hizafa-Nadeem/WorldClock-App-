@@ -27,35 +27,84 @@ public class MainActivity extends AppCompatActivity{
     RecyclerView Rview;
     CitySelectedListAdapter adapter;
     final int REQUEST_CODE = 1;
+    ICityDao dao;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        create_City_list();
-
+        dao = new CItyDao(this);
         selected_cities = new ArrayList<City>();
         showMessage("Created");
 
+
+
+        create_City_list();
+
     }
+    public void onResume()
+    {
+        super.onResume();
+        showMessage("Resumed");
+        selected_cities = cities.get(0).load(dao);
+        if(selected_cities.size()!=0) {
+            CreateListView();
+        }
+
+        for (int i =0;i< selected_cities.size();i++)
+        {
+            load_checkbox(selected_cities.get(i).getName());
+
+        }
+
+
+    }
+
+    /*public void onPause()
+    {
+
+        super.onPause();
+        showMessage("Paused");
+        for(int i =0;i< selected_cities.size();i++)
+        {
+            selected_cities.get(i).save(dao);
+        }
+    }*/
+
+    void load_checkbox(String city_name)
+    {
+        boolean found = false;
+         for( int i =0;i<cities.size() && found == false;i++)
+         {
+             if(cities.get(i).getName().equals(city_name)==true)
+             {
+                 cities.get(i).setImportant(true);
+                 found = true;
+             }
+
+         }
+    }
+
+
     private void create_City_list() {
         cities = new ArrayList<City>();
-        City city1 = new City("Singapore","Asia/Singapore");
-        City city2 = new City("Karachi","Asia/Karachi");
-        City city3 = new City("Muscat","Asia/Muscat");
-        City city4 = new City("NewYork","America/NewYork");
-        City city5 = new City("Istanbul","Asia/Istanbul");
-        City city6 = new City("LogAngeles","America/Los_Angeles");
-        City city7= new City("San Francisco","America/San_Francisco");
-        City city8 = new City("London","Europe/London");
-        City city9 = new City("Victoria","Australia/Victoria");
-        City city10 = new City("Delhi","Asia/Delhi");
-        City city11 = new City("Shanghai","Asia/Shanghai");
-        City city12 = new City("Toronto","Canada/Toronto");
-        City city13 = new City("Yukon","Canada/Yukon");
-        City city14 = new City("Sydney","Australia/Sydney");
-        City city15 = new City("Mexico","America/Mexico_City");
+        City city1 = new City("Singapore","Asia/Singapore",dao);
+        City city2 = new City("Karachi","Asia/Karachi",dao);
+        City city3 = new City("Muscat","Asia/Muscat",dao);
+        City city4 = new City("NewYork","America/NewYork",dao);
+        City city5 = new City("Istanbul","Asia/Istanbul",dao);
+        City city6 = new City("LogAngeles","America/Los_Angeles",dao);
+        City city7= new City("San Francisco","America/San_Francisco",dao);
+        City city8 = new City("London","Europe/London",dao);
+        City city9 = new City("Victoria","Australia/Victoria",dao);
+        City city10 = new City("Delhi","Asia/Delhi",dao);
+        City city11 = new City("Shanghai","Asia/Shanghai",dao);
+        City city12 = new City("Toronto","Canada/Toronto",dao);
+        City city13 = new City("Yukon","Canada/Yukon",dao);
+        City city14 = new City("Sydney","Australia/Sydney",dao);
+        City city15 = new City("Mexico","America/Mexico_City",dao);
         cities.add(city1);
         cities.add(city2);
         cities.add(city3);
@@ -73,6 +122,15 @@ public class MainActivity extends AppCompatActivity{
         cities.add(city15);
 
     }
+    private void CreateListView()
+    {
+        Rview = (RecyclerView) findViewById(R.id.view_list1);
+        Rview.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter= new CitySelectedListAdapter(selected_cities);
+        Rview.setAdapter(adapter);
+    }
+
 
 
     private void showMessage(String message) {
@@ -82,14 +140,14 @@ public class MainActivity extends AppCompatActivity{
     public void buttonClick(View v)
     {
         if (v.getId() == R.id.button_list) {
-            showMessage("buttonClicked");
+
             list_cities();
         }
     }
     public void list_cities()
     {
 
-        showMessage("city_list");
+
         Intent intent = new Intent(this, ListActivity.class);
         intent.putExtra("list",cities);
         startActivityForResult(intent,REQUEST_CODE);
@@ -97,7 +155,7 @@ public class MainActivity extends AppCompatActivity{
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        showMessage("Activity Result");
+
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE){
             if (resultCode == RESULT_OK) {
@@ -117,34 +175,45 @@ public class MainActivity extends AppCompatActivity{
         }
 
     }
+    int Already_selected(City city)
+    {
+        int ind =-1;
+        for (int i=0;i< selected_cities.size()&& ind == -1;i++)
+        {
+            if (selected_cities.get(i).getName().equals( city .getName()) == true)
+            {
+                ind = i;
+            }
+        }
+        return ind;
+    }
 
     private void addselectedcities() {
 
-        selected_cities.clear();
+        //selected_cities.clear();
         for(int i=0;i<cities.size();i++) {
-            if(cities.get(i).isImportant() == true) {
+            int ind = Already_selected(cities.get(i));
+            if(cities.get(i).isImportant() == true && ind == -1) {
 
                 selected_cities.add(cities.get(i));
+                cities.get(i).save(dao);
 
+            }
+            else if(cities.get(i).isImportant() == false && ind !=-1)
+            {
+                deleteCity(ind);
             }
         }
 
+
     }
 
 
-    private void CreateListView()
-    {
-        Rview = (RecyclerView) findViewById(R.id.view_list1);
-        Rview.setLayoutManager(new LinearLayoutManager(this));
-
-        adapter= new CitySelectedListAdapter(selected_cities);
-        Rview.setAdapter(adapter);
-    }
 
     void deleteCity(int id)
     {
         showMessage("deleted");
-        adapter.update_list(id);
+        adapter.update_list(id,dao);
     }
 
 
