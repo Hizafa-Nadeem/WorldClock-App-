@@ -60,6 +60,16 @@ public class MainActivity extends AppCompatActivity{
 
 
     }
+
+    public void onPause()
+    {
+        super.onPause();
+
+        for(int i =0;i< selected_cities.size();i++)
+        {
+            selected_cities.get(i).save(dao);
+        }
+    }
     void load_checkbox(String city_name)
     {
         boolean found = false;
@@ -183,16 +193,15 @@ public class MainActivity extends AppCompatActivity{
             if(cities.get(i).isImportant() == true && ind == -1) {
 
                 selected_cities.add(cities.get(i));
-                cities.get(i).save(dao);
+                //cities.get(i).save(dao);
 
 
             }
-            else if(cities.get(i).isImportant() == false && ind !=1)
+            else if(cities.get(i).isImportant() == false && ind !=-1)
             {
                 selected_cities.remove(ind);
                 //Todo cities.get(i).delete();
-                //adapter.notifyDataSetChanged();
-                //adapter.notifyDataSetChanged();
+                //adapter.update_list(ind);
             }
         }
 
