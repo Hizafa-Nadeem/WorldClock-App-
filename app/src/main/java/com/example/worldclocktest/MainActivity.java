@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity{
             selected_cities.get(i).save(dao);
         }
     }
+
     void load_checkbox(String city_name)
     {
         boolean found = false;
@@ -200,8 +201,7 @@ public class MainActivity extends AppCompatActivity{
             else if(cities.get(i).isImportant() == false && ind !=-1)
             {
                 selected_cities.remove(ind);
-                //Todo cities.get(i).delete();
-                //adapter.update_list(ind);
+                //adapter.update_list();
             }
         }
 
