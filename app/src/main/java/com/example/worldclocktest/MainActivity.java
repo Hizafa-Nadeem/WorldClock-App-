@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity{
     public void onResume()
     {
         super.onResume();
+        showMessage("Resumed");
         selected_cities = cities.get(0).load(dao);
         if(selected_cities.size()!=0) {
             CreateListView();
@@ -61,15 +62,16 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    public void onPause()
+    /*public void onPause()
     {
-        super.onPause();
 
+        super.onPause();
+        showMessage("Paused");
         for(int i =0;i< selected_cities.size();i++)
         {
             selected_cities.get(i).save(dao);
         }
-    }
+    }*/
 
     void load_checkbox(String city_name)
     {
@@ -138,14 +140,14 @@ public class MainActivity extends AppCompatActivity{
     public void buttonClick(View v)
     {
         if (v.getId() == R.id.button_list) {
-            showMessage("buttonClicked");
+
             list_cities();
         }
     }
     public void list_cities()
     {
 
-        showMessage("city_list");
+
         Intent intent = new Intent(this, ListActivity.class);
         intent.putExtra("list",cities);
         startActivityForResult(intent,REQUEST_CODE);
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity{
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        showMessage("Activity Result");
+
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE){
             if (resultCode == RESULT_OK) {
@@ -194,6 +196,7 @@ public class MainActivity extends AppCompatActivity{
             if(cities.get(i).isImportant() == true && ind == -1) {
 
                 selected_cities.add(cities.get(i));
+                cities.get(i).save(dao);
 
             }
             else if(cities.get(i).isImportant() == false && ind !=-1)

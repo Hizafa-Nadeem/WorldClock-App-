@@ -86,6 +86,7 @@ public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedLi
     }
     public void update_list(int ind,ICityDao dao)
     {
+        selected_cities.get(ind).setImportant(false);
         selected_cities.get(ind).delete(selected_cities.get(ind).getName(),dao);
         selected_cities.remove(ind);
         notifyDataSetChanged();
