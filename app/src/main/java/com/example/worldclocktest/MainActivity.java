@@ -61,6 +61,10 @@ public class MainActivity extends AppCompatActivity{
         dao = new CItyDao(this);
         selected_cities = new ArrayList<City>();
         showMessage("Created");
+        Intent intent=new Intent(this,TimezoneService.class);
+        startService(intent);
+        bindService(intent,connection,Context.BIND_AUTO_CREATE);
+
         create_City_list();
 
     }
@@ -68,9 +72,6 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent=new Intent(this,TimezoneService.class);
-        startService(intent);
-        bindService(intent,connection,Context.BIND_AUTO_CREATE);
         showMessage("Started");
 
     }
