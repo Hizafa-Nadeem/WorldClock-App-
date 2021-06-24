@@ -91,4 +91,13 @@ public class CitySelectedListAdapter extends RecyclerView.Adapter<CitySelectedLi
         selected_cities.remove(ind);
         notifyDataSetChanged();
     }
+    public void updateTime()
+    {
+        /*for(int i =0;i<selected_cities.size();i++)
+        {
+            //selected_cities.get(i).updatetime();
+
+        }*/
+        notifyDataSetChanged();
+    }
 };

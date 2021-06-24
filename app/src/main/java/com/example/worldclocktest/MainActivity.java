@@ -6,9 +6,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,18 +23,47 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
 
-    ArrayList<City> selected_cities;
-    ArrayList<City> cities;
-    RecyclerView Rview;
-    CitySelectedListAdapter adapter;
+    ArrayList<City> selected_cities = null;
+    ArrayList<City> cities= null;
+    ArrayList<CityNames> cityNames;
+    RecyclerView Rview =null;
+    CitySelectedListAdapter adapter =null;
     final int REQUEST_CODE = 1;
     ICityDao dao;
+    TimezoneService timezoneService =null;
+    boolean bound =false;
 
+    private ServiceConnection connection=new ServiceConnection(){
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            timezoneService = ((TimezoneService.LocalBinder) service).getService();
+            Log.e("Serviceconnected","ServiceConnected");
+            bound=true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound=false;
+        }
+
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,41 +72,91 @@ public class MainActivity extends AppCompatActivity{
 
         dao = new CItyDao(this);
         selected_cities = new ArrayList<City>();
+        cities = new ArrayList<City>();
+
         showMessage("Created");
+        Intent intent=new Intent(this,TimezoneService.class);
+        startService(intent);
+        bindService(intent,connection,Context.BIND_AUTO_CREATE);
+
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run() {
+                while(!isInterrupted())
+                {
+                    try {
+
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for(int i =0;i<selected_cities.size();i++)
+                                {
+                                    selected_cities.get(i).updatetime();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        });
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
+
+        //create_City_list();
+        try {
+            loadCities();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
 
 
-        create_City_list();
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        showMessage("Started");
+
+    }
+
     public void onResume()
     {
-        super.onResume();
-        showMessage("Resumed");
-        selected_cities = cities.get(0).load(dao);
-        if(selected_cities.size()!=0) {
+            super.onResume();
+            showMessage("Resumed");
+            City temp = new City("temp","temp",dao);
+            selected_cities = temp.load(dao);
+        if (selected_cities.size() != 0) {
             CreateListView();
         }
 
-        for (int i =0;i< selected_cities.size();i++)
-        {
+        for (int i = 0; i < selected_cities.size(); i++) {
             load_checkbox(selected_cities.get(i).getName());
 
         }
 
-
     }
 
-    /*public void onPause()
-    {
 
-        super.onPause();
-        showMessage("Paused");
-        for(int i =0;i< selected_cities.size();i++)
+
+    public void LoadCities(ArrayList<CityNames> cityNames)
+    {
+        for(int i =0;i<cityNames.size();i++)
         {
-            selected_cities.get(i).save(dao);
+            String cityName = cityNames.get(i).cityname;
+            String zoneName = cityNames.get(i).zoneName;
+            City city = new City(cityName,zoneName,dao);
+            cities.add(city);
         }
-    }*/
+    }
+
+
 
     void load_checkbox(String city_name)
     {
@@ -124,6 +209,7 @@ public class MainActivity extends AppCompatActivity{
     }
     private void CreateListView()
     {
+
         Rview = (RecyclerView) findViewById(R.id.view_list1);
         Rview.setLayoutManager(new LinearLayoutManager(this));
 
@@ -142,6 +228,7 @@ public class MainActivity extends AppCompatActivity{
         if (v.getId() == R.id.button_list) {
 
             list_cities();
+
         }
     }
     public void list_cities()
@@ -216,11 +303,6 @@ public class MainActivity extends AppCompatActivity{
         adapter.update_list(id,dao);
     }
 
-
-
-
-
-
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -234,7 +316,79 @@ public class MainActivity extends AppCompatActivity{
         }
 
     }
+    void loadCities() throws MalformedURLException {
+        URL url = new URL("http://api.timezonedb.com/v2.1/list-time-zone?key=P8B5V3KL22GA&format=json");
+        new LoadCitiesTask().execute(url);
+    }
+
+    public class LoadCitiesTask extends AsyncTask<URL,String,String>
+    {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            HttpURLConnection connection = null;
+            BufferedReader reader;
+            Log.d("connecttimezone", "connectedwithtimezonedb");
+
+            try {
+                URL url = new URL("http://api.timezonedb.com/v2.1/list-time-zone?key=P8B5V3KL22GA&format=json");
 
 
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setReadTimeout(10000);
+                connection.setConnectTimeout(15000);
+                connection.setRequestMethod("GET");
+                connection.setDoInput(true);
+                connection.connect();
 
+                InputStream stream = connection.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(stream));
+
+                StringBuffer buffer = new StringBuffer();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+                String content = buffer.toString();
+                return content;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                connection.disconnect();
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String Content) {
+            super.onPostExecute(Content);
+            if (!Content.isEmpty()) {
+                try {
+                    JSONObject jsonObject = new JSONObject(Content);
+                    JSONArray Zones = jsonObject.getJSONArray("zones");
+
+                    for (int i = 0; i < Zones.length(); i++) {
+                        JSONObject zone = Zones.getJSONObject(i);
+                        String countryCode = zone.getString("countryCode");
+                        String countryName = zone.getString("countryName");
+                        String zoneName = zone.getString("zoneName");
+                        int gmtOffset = zone.getInt("gmtOffset");
+                        int timestamp = zone.getInt("timestamp");
+                        zoneName = zoneName.replace("\\", "");
+                        String cityname= zoneName.split("/")[1];
+                        City city = new City(cityname,zoneName,dao);
+                        cities.add(city);
+                    }
+
+                }
+                catch(JSONException j)
+                {
+                 j.printStackTrace();
+                }
+            }
+
+        }
+    };
 }
