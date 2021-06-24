@@ -23,20 +23,17 @@ public class City implements Serializable {
 
     private transient ICityDao dao = null;
 
-    public City(String name,String time,ICityDao dao){
+    public City(String name,String zname,ICityDao dao){
         init();
         this.name = name;
         this.important = false;
         this.dao = dao;
-        this.zoneName = time;
-
-        this.time = TimeZone.getTimeZone(time);
+        this.zoneName = zname;
+        this.time = TimeZone.getTimeZone(zname);
         Date date =  new Date();
         SimpleDateFormat df  = new SimpleDateFormat("hh:mm:ss");
         df.setTimeZone(this.time);
         timevalue = df.format(date);
-
-
 
     }
     public void updatetime()
@@ -83,12 +80,13 @@ public class City implements Serializable {
         }
         if(dao != null) {
             Hashtable<String, String> row = new Hashtable<String, String>();
-            SimpleDateFormat df = new SimpleDateFormat("hh:mm");
+            SimpleDateFormat df = new SimpleDateFormat("hh:mm:ss");
 
             row.put("id", id);
             row.put("name", name);
-            row.put("important", important ? "true" : "false"); //Todo Learn this as well
             row.put("time", timevalue);
+            row.put("zonename",zoneName);
+            row.put("important", important ? "true" : "false"); //Todo Learn this as well
 
             dao.save(row);
         }
@@ -102,8 +100,8 @@ public class City implements Serializable {
         id = row.get("id");
         name = row.get("name");
         timevalue = row.get("time");
+        zoneName = row.get("zonename");
         important = Boolean.parseBoolean(row.get("important"));
-
 
     }
     public  ArrayList<City> load(ICityDao dao)

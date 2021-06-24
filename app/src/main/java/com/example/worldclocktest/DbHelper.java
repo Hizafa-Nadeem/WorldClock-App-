@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class DbHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Cities.db";
+    public static final String DATABASE_NAME = "CITIES.db";
 
     public DbHelper(Context context){
 
@@ -22,6 +22,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String sql = "CREATE TABLE City (Id TEXT PRIMARY KEY, " +
                 "Name TEXT," +
                 "Time TEXT,"+
+                "Zonename TEXT,"+
                 "Important INTEGER)";//Todo Learn This
         db.execSQL(sql);
     }
