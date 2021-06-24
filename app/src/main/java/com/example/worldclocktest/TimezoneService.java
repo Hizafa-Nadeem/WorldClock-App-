@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.MenuBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,12 +20,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class TimezoneService extends Service {
 
     private final IBinder binder = new LocalBinder();
     ZoneDao Zdao;
+    ArrayList<CityNames> cityNames;
 
     @Override
     public void onCreate(){
@@ -107,11 +110,21 @@ public class TimezoneService extends Service {
                 int gmtOffset = zone.getInt("gmtOffset");
                 int timestamp = zone.getInt("timestamp");
                 zoneName = zoneName.replace("\\", "");
+                String cityname= zoneName.split("/")[1];
+               /* CityNames city = new CityNames(cityname,zoneName);
+
+                cityNames.add(city);
+                */
                 zoneModel zoneObj = new zoneModel(countryCode, countryName, zoneName, gmtOffset, timestamp);
                 zoneObj.save(Zdao);
             }
         }
 
+    }
+
+    public ArrayList<CityNames> getCities()
+    {
+        return cityNames;
     }
 
 
