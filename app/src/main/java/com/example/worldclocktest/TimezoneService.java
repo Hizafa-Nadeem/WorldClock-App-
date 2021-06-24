@@ -24,12 +24,12 @@ import java.net.URL;
 public class TimezoneService extends Service {
 
     private final IBinder binder = new LocalBinder();
-    //ZoneDao Zdao;
+    ZoneDao Zdao;
 
     @Override
     public void onCreate(){
         super.onCreate();
-        //Zdao=new ZoneDao(this);
+        Zdao=new ZoneDao(this);
     }
 
     @Override
@@ -107,11 +107,10 @@ public class TimezoneService extends Service {
                 int gmtOffset = zone.getInt("gmtOffset");
                 int timestamp = zone.getInt("timestamp");
                 zoneName = zoneName.replace("\\", "");
-                //zoneModel zoneObj = new zoneModel(countryCode, countryName, zoneName, gmtOffset, timestamp);
-                //zoneObj.save(Zdao);
+                zoneModel zoneObj = new zoneModel(countryCode, countryName, zoneName, gmtOffset, timestamp);
+                zoneObj.save(Zdao);
             }
         }
-
 
     }
 
