@@ -19,6 +19,7 @@ public class City implements Serializable {
     private boolean important;
     private TimeZone time;
     String timevalue;
+    String zoneName ;
 
     private transient ICityDao dao = null;
 
@@ -27,16 +28,24 @@ public class City implements Serializable {
         this.name = name;
         this.important = false;
         this.dao = dao;
-        //this.time = time
+        this.zoneName = time;
 
         this.time = TimeZone.getTimeZone(time);
         Date date =  new Date();
-        SimpleDateFormat df  = new SimpleDateFormat("hh:mm");
+        SimpleDateFormat df  = new SimpleDateFormat("hh:mm:ss");
         df.setTimeZone(this.time);
         timevalue = df.format(date);
 
 
 
+    }
+    public void updatetime()
+    {
+        this.time = TimeZone.getTimeZone(this.zoneName);
+        Date date =  new Date();
+        SimpleDateFormat df  = new SimpleDateFormat("hh:mm:ss");
+        df.setTimeZone(this.time);
+        this.timevalue = df.format(date);
     }
     private void init() {
         this.id = UUID.randomUUID().toString();
@@ -50,7 +59,7 @@ public class City implements Serializable {
     }
     public boolean isCity(City city) {
 
-        if (this.name.equals(city.name)) // ==?
+        if (this.name.equals(city.name))
             return true;
         else
             return false;

@@ -26,13 +26,13 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity{
 
 
-    ArrayList<City> selected_cities;
-    ArrayList<City> cities;
-    RecyclerView Rview;
-    CitySelectedListAdapter adapter;
+    ArrayList<City> selected_cities = null;
+    ArrayList<City> cities= null;
+    RecyclerView Rview =null;
+    CitySelectedListAdapter adapter =null;
     final int REQUEST_CODE = 1;
     ICityDao dao;
-    TimezoneService timezoneService;
+    TimezoneService timezoneService =null;
     boolean bound =false;
 
     private ServiceConnection connection=new ServiceConnection(){
@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity{
     };
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +64,39 @@ public class MainActivity extends AppCompatActivity{
         startService(intent);
         bindService(intent,connection,Context.BIND_AUTO_CREATE);
 
+
+
+
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run() {
+                while(!isInterrupted())
+                {
+                    try {
+
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for(int i =0;i<selected_cities.size();i++)
+                                {
+                                    selected_cities.get(i).updatetime();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        });
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
+
         create_City_list();
+
 
     }
 
@@ -81,6 +112,11 @@ public class MainActivity extends AppCompatActivity{
         super.onResume();
         showMessage("Resumed");
         selected_cities = cities.get(0).load(dao);
+        /*
+        for (int i =0;i<selected_cities.size();i++)
+        {
+            selected_cities.get(i).updatetime();
+        }*/
         if(selected_cities.size()!=0) {
             CreateListView();
         }
