@@ -6,9 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +32,25 @@ public class MainActivity extends AppCompatActivity{
     CitySelectedListAdapter adapter;
     final int REQUEST_CODE = 1;
     ICityDao dao;
+    TimezoneService timezoneService;
+    boolean bound =false;
+
+    private ServiceConnection connection=new ServiceConnection(){
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            timezoneService = ((TimezoneService.LocalBinder) service).getService();
+            Log.e("Serviceconnected","ServiceConnected");
+            bound=true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound=false;
+        }
+
+    };
+
 
 
     @Override
@@ -38,12 +61,20 @@ public class MainActivity extends AppCompatActivity{
         dao = new CItyDao(this);
         selected_cities = new ArrayList<City>();
         showMessage("Created");
-
-
-
         create_City_list();
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent=new Intent(this,TimezoneService.class);
+        startService(intent);
+        bindService(intent,connection,Context.BIND_AUTO_CREATE);
+        showMessage("Started");
+
+    }
+
     public void onResume()
     {
         super.onResume();
